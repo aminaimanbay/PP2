@@ -22,6 +22,7 @@ SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 SPEED = 5
 SCORE = 0
+SUM = 0
 
 #Setting up Fonts
 font = pygame.font.SysFont("Verdana", 60)
@@ -65,6 +66,9 @@ class Player(pygame.sprite.Sprite):
        
     def move(self):
         pressed_keys = pygame.key.get_pressed()
+    
+        pygame.mixer.Sound('Clickbutton.mp3').play()
+
        #if pressed_keys[K_UP]:
             #self.rect.move_ip(0, -5)
        #if pressed_keys[K_DOWN]:
@@ -95,6 +99,7 @@ class Coin (pygame.sprite.Sprite):
 #Setting up Sprites        
 P1 = Player()
 E1 = Enemy()
+E2 = Enemy()
 C1 = Coin ()
 C2 = Coin ()
 C3 = Coin ()
@@ -102,9 +107,15 @@ C3 = Coin ()
 #Creating Sprites Groups
 enemies = pygame.sprite.Group()
 enemies.add(E1)
+enemies.add(E2)
+coins = pygame.sprite.Group()
+coins.add (C1)
+coins.add (C2)
+coins.add (C3)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(P1)
 all_sprites.add(E1)
+all_sprites.add(E2)
 all_sprites.add(C1)
 all_sprites.add(C2)
 all_sprites.add(C3)
@@ -127,13 +138,20 @@ while True:
 
 
     DISPLAYSURF.blit(background, (0,0))
-    scores = font_small.render(str(SCORE), True, BLACK)
+    scores = font_small.render("Score " + str(SCORE), True, BLACK)
     DISPLAYSURF.blit(scores, (10,10))
+    sums = font_small.render("Coins " + str(SUM), True, BLACK)
+    DISPLAYSURF.blit(scores, (290,10))
+
 
     #Moves and Re-draws all Sprites
     for entity in all_sprites:
         DISPLAYSURF.blit(entity.image, entity.rect)
         entity.move()
+
+    #To be run if collision occurs between Player and Coin
+    if pygame.sprite.spritecollideany(P1, coins):
+          SUM+=1
 
     #To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
