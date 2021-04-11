@@ -70,11 +70,11 @@ class Player(pygame.sprite.Sprite):
         pygame.mixer.Sound('Clickbutton.mp3').play()
         
         if self.rect.left > 0:
-              if pressed_keys[K_LEFT]:
-                  self.rect.move_ip(-5, 0)
+                if pressed_keys[K_LEFT]:
+                    self.rect.move_ip(-5, 0)
         if self.rect.right < SCREEN_WIDTH:        
-              if pressed_keys[K_RIGHT]:
-                  self.rect.move_ip(5, 0)
+                if pressed_keys[K_RIGHT]:
+                    self.rect.move_ip(5, 0)
                   
 class Coin (pygame.sprite.Sprite):
         def __init__(self):
@@ -92,7 +92,7 @@ class Coin (pygame.sprite.Sprite):
 #Setting up Sprites        
 P1 = Player()
 E1 = Enemy()
-E2 = Enemy()
+
 C1 = Coin()
 C2 = Coin()
 C3 = Coin()
@@ -100,7 +100,7 @@ C3 = Coin()
 #Creating Sprites Groups
 enemies = pygame.sprite.Group()
 enemies.add(E1)
-enemies.add(E2)
+
 coins = pygame.sprite.Group()
 coins.add (C1)
 coins.add (C2)
@@ -108,7 +108,7 @@ coins.add (C3)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(P1)
 all_sprites.add(E1)
-all_sprites.add(E2)
+
 all_sprites.add(C1)
 all_sprites.add(C2)
 all_sprites.add(C3)
@@ -116,6 +116,8 @@ all_sprites.add(C3)
 #Adding a new User event 
 INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1000)
+ADDENEMY = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDENEMY, 9000)
 
 #Game Loop
 while True:
@@ -123,8 +125,15 @@ while True:
     #Cycles through all events occuring  
     for event in pygame.event.get():
         if event.type == INC_SPEED:
-              SPEED += 0.5      
-        if event.type == QUIT:
+            SPEED += 0.5     
+        # Add a new enemy?
+        elif event.type == ADDENEMY:
+            # Create the new enemy and add it to sprite groups
+            new_enemy = Enemy()
+            enemies.add(new_enemy)
+            all_sprites.add(new_enemy) 
+            
+        elif event.type == QUIT:
             pygame.quit()
             sys.exit()
 
@@ -144,24 +153,24 @@ while True:
 
     #To be run if collision occurs between Player and Coin
     if pygame.sprite.spritecollideany(P1, coins):
-          SUM+=1
-
+        SUM+=1
     #To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
-          pygame.mixer.Sound('crash.wav').play()
-          time.sleep(1)
+        pygame.mixer.Sound('crash.wav').play()
+        time.sleep(1)
                    
-          DISPLAYSURF.fill(RED)
-          DISPLAYSURF.blit(game_over, (30,250))
+        DISPLAYSURF.fill(RED)
+        DISPLAYSURF.blit(game_over, (30,250))
           
-          pygame.display.update()
-          for entity in all_sprites:
-                entity.kill() 
-          time.sleep(2)
-          pygame.quit()
-          sys.exit()        
+        pygame.display.update()
+        for entity in all_sprites:
+            entity.kill() 
+        time.sleep(2)
+        pygame.quit()
+        sys.exit()        
         
     pygame.display.update()
+    enemies.update()
     FramePerSec.tick(FPS)
     
 
