@@ -96,6 +96,8 @@ class Coin (pygame.sprite.Sprite):
 P1 = Player()
 E1 = Enemy()
 C1 = Coin ()
+C2 = Coin ()
+C3 = Coin ()
 
 #Creating Sprites Groups
 enemies = pygame.sprite.Group()
@@ -104,6 +106,8 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(P1)
 all_sprites.add(E1)
 all_sprites.add(C1)
+all_sprites.add(C2)
+all_sprites.add(C3)
 
 #Adding a new User event 
 INC_SPEED = pygame.USEREVENT + 1
