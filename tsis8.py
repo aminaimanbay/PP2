@@ -68,11 +68,6 @@ class Player(pygame.sprite.Sprite):
         pressed_keys = pygame.key.get_pressed()
     
         pygame.mixer.Sound('Clickbutton.mp3').play()
-
-       #if pressed_keys[K_UP]:
-            #self.rect.move_ip(0, -5)
-       #if pressed_keys[K_DOWN]:
-            #self.rect.move_ip(0,5)
         
         if self.rect.left > 0:
               if pressed_keys[K_LEFT]:
@@ -89,10 +84,8 @@ class Coin (pygame.sprite.Sprite):
             self.rect = self.surf.get_rect(center = (10, 10))
 
         def move(self):
-            global SCORE
-            self.rect.move_ip(0,SPEED)
+            self.rect.move_ip(0,7)
             if (self.rect.bottom > 600):
-                SCORE += 1
                 self.rect.top = 0
                 self.rect.center = (random.randint(10, SCREEN_WIDTH - 10), 0)
 
@@ -100,9 +93,9 @@ class Coin (pygame.sprite.Sprite):
 P1 = Player()
 E1 = Enemy()
 E2 = Enemy()
-C1 = Coin ()
-C2 = Coin ()
-C3 = Coin ()
+C1 = Coin()
+C2 = Coin()
+C3 = Coin()
 
 #Creating Sprites Groups
 enemies = pygame.sprite.Group()
@@ -141,7 +134,7 @@ while True:
     scores = font_small.render("Score " + str(SCORE), True, BLACK)
     DISPLAYSURF.blit(scores, (10,10))
     sums = font_small.render("Coins " + str(SUM), True, BLACK)
-    DISPLAYSURF.blit(scores, (290,10))
+    DISPLAYSURF.blit(sums, (290,10))
 
 
     #Moves and Re-draws all Sprites
