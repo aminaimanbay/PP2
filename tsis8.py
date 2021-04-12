@@ -41,13 +41,18 @@ pygame.display.set_caption("Game")
 pygame.mixer.music.load('jumpingexplorer.mp3')
 pygame.mixer.music.play(-1)  
 
+
+
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
+        w = random.randint(28, 55)
+        h=random.randint(59, 85) 
         super().__init__() 
         self.image = pygame.image.load("Enemy.png")
-        self.surf = pygame.Surface((42, 70))
+        self.surf = pygame.Surface((w,h)) 
         self.rect = self.surf.get_rect(center = (random.randint(40,SCREEN_WIDTH-40)
                                                  , 0))
+       
 
       def move(self):
         global SCORE
