@@ -20,8 +20,9 @@ WHITE = (255, 255, 255)
 #Other Variables for use in the program
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
-SPEED = 5
+SPEED = random.randint(1, 5)
 SCORE = 0
+MAX_HEALTH = 200
 SUM = 0
 
 #Setting up Fonts
@@ -63,6 +64,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("Player.png")
         self.surf = pygame.Surface((40, 75))
         self.rect = self.surf.get_rect(center = (160, 520))
+        self.health = 200
        
     def move(self):
         pressed_keys = pygame.key.get_pressed()
@@ -75,6 +77,15 @@ class Player(pygame.sprite.Sprite):
         if self.rect.right < SCREEN_WIDTH:        
                 if pressed_keys[K_RIGHT]:
                     self.rect.move_ip(5, 0)
+
+    def draw_health(self):
+        r = min(255, 255 - (255 * ((self.health - (MAX_HEALTH - self.health)) / MAX_HEALTH)))
+        b = min(255, 255 * (self.health / (MAX_HEALTH / 2)))
+        color = (r, 0, b)
+        width = int(self.rect.width * self.health / MAX_HEALTH)
+        self.health_bar = pygame.Rect(0, 0, width, 9)
+        pygame.draw.rect(self.image, color, self.health_bar)
+
                   
 class Coin (pygame.sprite.Sprite):
         def __init__(self):
@@ -114,20 +125,17 @@ all_sprites.add(C2)
 all_sprites.add(C3)
 
 #Adding a new User event 
-INC_SPEED = pygame.USEREVENT + 1
-pygame.time.set_timer(INC_SPEED, 1000)
 ADDENEMY = pygame.USEREVENT + 2
 pygame.time.set_timer(ADDENEMY, 9000)
+
 
 #Game Loop
 while True:
       
     #Cycles through all events occuring  
-    for event in pygame.event.get():
-        if event.type == INC_SPEED:
-            SPEED += 0.5     
-        # Add a new enemy?
-        elif event.type == ADDENEMY:
+    for event in pygame.event.get():  
+        
+        if event.type == ADDENEMY:
             # Create the new enemy and add it to sprite groups
             new_enemy = Enemy()
             enemies.add(new_enemy)
@@ -137,7 +145,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-
+    
 
     DISPLAYSURF.blit(background, (0,0))
     scores = font_small.render("Score " + str(SCORE), True, BLACK)
@@ -151,24 +159,31 @@ while True:
         DISPLAYSURF.blit(entity.image, entity.rect)
         entity.move()
 
+    
+    P1.draw_health()
+
     #To be run if collision occurs between Player and Coin
     if pygame.sprite.spritecollideany(P1, coins):
         SUM+=1
         
     #To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
-        pygame.mixer.Sound('crash.wav').play()
-        time.sleep(1)
+        P1.health -=1
+        if P1.health ==0 :
+            pygame.mixer.Sound('crash.wav').play()
+            time.sleep(1)
                    
-        DISPLAYSURF.fill(RED)
-        DISPLAYSURF.blit(game_over, (30,250))
+            DISPLAYSURF.fill(RED)
+            DISPLAYSURF.blit(game_over, (30,250))
           
-        pygame.display.update()
-        for entity in all_sprites:
-            entity.kill() 
-        time.sleep(2)
-        pygame.quit()
-        sys.exit()        
+            pygame.display.update()
+            for entity in all_sprites:
+                entity.kill() 
+            time.sleep(2)
+            pygame.quit()
+            sys.exit()    
+
+            
         
     pygame.display.update()
     enemies.update()
