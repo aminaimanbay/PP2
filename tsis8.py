@@ -59,7 +59,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.move_ip(0,SPEED)
         w = random.randint(28, 75)
         h=random.randint(59, 100) 
-  
+
         if self.rect.top > 600:
             SCORE += 1
             xx = [60, 210, 360]
@@ -150,7 +150,7 @@ while True:
         
         if event.type == ADDENEMY:
             # Create the new enemy and add it to sprite groups
-            new_enemy = Enemy()
+            new_enemy = Enemy(60,-50,5)
             enemies.add(new_enemy)
             all_sprites.add(new_enemy) 
             
