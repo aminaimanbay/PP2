@@ -44,7 +44,7 @@ pygame.mixer.music.play(-1)
 
 
 class Enemy(pygame.sprite.Sprite):
-      def __init__(self):
+      def __init__(self,x, y, speed):
         w = random.randint(28, 55)
         h=random.randint(59, 85) 
         super().__init__() 
@@ -52,16 +52,23 @@ class Enemy(pygame.sprite.Sprite):
         self.surf = pygame.Surface((w,h)) 
         self.rect = self.surf.get_rect(center = (random.randint(40,SCREEN_WIDTH-40)
                                                  , 0))
-       
+        self.speed = speed
 
       def move(self):
         global SCORE
         self.rect.move_ip(0,SPEED)
-        if (self.rect.bottom > 600):
+        w = random.randint(28, 75)
+        h=random.randint(59, 100) 
+  
+        if self.rect.top > 600:
             SCORE += 1
-            self.rect.top = 0
-            self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
-
+            xx = [60, 210, 360]
+            x = xx[random.randint(0, 2)]
+            y = random.randint(-200, -100)
+            self.speed = random.randint(3, 7)
+            self.rect.center = (x, y)
+        else:
+            self.rect.move_ip(0, self.speed)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -107,7 +114,8 @@ class Coin (pygame.sprite.Sprite):
 
 #Setting up Sprites        
 P1 = Player()
-E1 = Enemy()
+
+E1 = Enemy(60, -50, 5)
 
 C1 = Coin()
 C2 = Coin()
