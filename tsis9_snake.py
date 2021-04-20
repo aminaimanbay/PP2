@@ -98,6 +98,43 @@ def game_over():
     sys.exit()
 
 
+def cache (filename):
+    global c,code
+    try:
+        c = open(filename + ".txt", "rt")
+        code = eval(c.read())
+        c.close()
+    except:
+        c = open(filename + ".txt", "wt")
+        c.write("{'': ''}")
+        c.close()
+
+        c = open(filename + ".txt", "rt")
+        code = eval(c.read())
+        c.close()
+
+def find(filename,variable):
+    global c,code
+    c = open(filename + ".txt", "rt")
+    code = eval(c.read())
+    c.close()
+    variable2 = code.get(variable)
+    return variable2
+
+def store(filename,variable,info):
+    global c,code
+    code[variable] = info
+    c = open(filename + ".txt", "wt")
+    c.write(str(code))
+    c.close()
+
+
+file = "snakefile"
+
+
+cache (file)
+
+
 def the_game():
     running= True
     global food_x, food_y,  d
@@ -111,6 +148,21 @@ def the_game():
                     running = False
                 if event.key == pygame.K_SPACE:
                     food_x, food_y = set_random_position()
+                    ########################################################
+                if event.key == pygame.K_c :
+                    clearcache(file) 
+                if event.key == pygame.K_s :
+                    store(file,"food_x",food_x)
+                    store(file,"food_y",food_y)
+                    store(file,"snake1.elements[0][0]",snake1.elements[0][0])                   
+                    store(file,"snake1.elements[0][1]",snake1.elements[0][1])
+                    store(file,"snake2.elements[0][0]",snake2.elements[0][0])                    
+                    store(file,"snake2.elements[0][1]",snake2.elements[0][1])
+
+
+
+
+
                 if event.key == pygame.K_q :
                     game_over()
 
@@ -230,7 +282,88 @@ def start_the_hard_game():
 
         pygame.display.flip()
     
+def continuegame():
+    running= True
+    global food_x, food_y,  d
+    food_x = find(file,"food_x")
+    food_y = find(file,"food_y")
+    snake1.elements[0][0]=find(file,"snake1.elements[0][0]")
+    snake1.elements[0][1]=find(file,"snake1.elements[0][1]")
+    snake2.elements[0][0]=find(file,"snake2.elements[0][0]")
+    snake2.elements[0][1]=find(file,"snake2.elements[0][1]")
     
+    while running:
+        clock.tick(snake1.speed)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                if event.key == pygame.K_SPACE:
+                    food_x, food_y = set_random_position()
+                    ########################################################
+                if event.key == pygame.K_c :
+                    clearcache(file) 
+                if event.key == pygame.K_s :
+                    store(file,"food_x",food_x)
+                    store(file,"food_y",food_y)
+                    store(file,"snake1.elements[0][0]",snake1.elements[0][0])                   
+                    store(file,"snake1.elements[0][1]",snake1.elements[0][1])
+                    store(file,"snake2.elements[0][0]",snake2.elements[0][0])                    
+                    store(file,"snake2.elements[0][1]",snake2.elements[0][1])
+
+
+
+
+
+                if event.key == pygame.K_q :
+                    game_over()
+
+                if event.key == pygame.K_RIGHT and snake1.dx != -d:
+                    snake1.dx, snake1.dy = d, 0
+
+                if event.key == pygame.K_LEFT and snake1.dx != d:
+                    snake1.dx, snake1.dy = -d, 0
+
+                if event.key == pygame.K_UP and snake1.dy != d:
+                    snake1.dx, snake1.dy = 0, -d
+              
+                if event.key == pygame.K_DOWN and snake1.dy != -d:
+                    snake1.dx, snake1.dy = 0, d
+                
+
+                if event.key == pygame.K_d and snake2.dx != -d:
+                    snake2.dx, snake2.dy = d, 0
+                
+                if event.key == pygame.K_a and snake2.dx != d:
+                    snake2.dx, snake2.dy = -d, 0
+               
+                if event.key == pygame.K_w and snake2.dy != d:
+                    snake2.dx, snake2.dy = 0, -d
+                
+                if event.key == pygame.K_s and snake2.dy != -d:
+                    snake2.dx, snake2.dy = 0, d
+              
+        if snake1.eat(food_x, food_y):
+            snake1.is_add = True
+            food_x, food_y = set_random_position()
+
+        if snake2.eat(food_x, food_y):
+            snake2.is_add = True
+            food_x, food_y = set_random_position()
+
+        snake1.move()
+        snake2.move()
+        screen.fill((0, 0, 0))
+        snake1.draw1()
+        snake2.draw2()
+        rectangle()
+        pygame.draw.rect(screen, (0, 255, 255), (food_x, food_y, 10, 10))
+        snake1.check_for_boundaries(game_over)
+        snake2.check_for_boundaries(game_over)
+        pygame.display.flip()
+
     
 
 
@@ -239,8 +372,11 @@ menu.add
 menu.add.button('Easy', start_the_easy_game)
 menu.add.button('Hard', start_the_hard_game)
 menu.add.label("q=Quit, space=food shift")
+menu.add.button('Continue',continuegame)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
 menu.mainloop(screen)
 
 pygame.quit()
+
+
