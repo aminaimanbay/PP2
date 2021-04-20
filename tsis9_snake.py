@@ -226,8 +226,21 @@ def start_the_hard_game():
                     running = False
                 if event.key == pygame.K_SPACE:
                     food_x, food_y = set_random_position()
-                if event.key == pygame.K_q :
+                if event.key == pygame.K_q :           
                     game_over()
+
+                 ########################################################
+                if event.key == pygame.K_c :
+                    clearcache(file) 
+                if event.key == pygame.K_s :
+                    store(file,"food_x",food_x)
+                    store(file,"food_y",food_y)
+                    store(file,"snake1.elements[0][0]",snake1.elements[0][0])                   
+                    store(file,"snake1.elements[0][1]",snake1.elements[0][1])
+                    store(file,"snake2.elements[0][0]",snake2.elements[0][0])                    
+                    store(file,"snake2.elements[0][1]",snake2.elements[0][1])
+
+
 
                 if event.key == pygame.K_RIGHT and snake1.dx != -d:
                     snake1.dx, snake1.dy = d, 0
@@ -371,7 +384,7 @@ menu = pygame_menu.Menu('Snake',300, 400,  theme=pygame_menu.themes.THEME_BLUE)
 menu.add
 menu.add.button('Easy', start_the_easy_game)
 menu.add.button('Hard', start_the_hard_game)
-menu.add.label("q=Quit, space=food shift")
+menu.add.label("q=Quit, space=food shift, s=save to file")
 menu.add.button('Continue',continuegame)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
